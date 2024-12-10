@@ -1,4 +1,7 @@
 import 'package:app/bottom_sheet.dart';
+import 'package:app/investment_detailed_screen.dart';
+import 'package:app/model/model.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:app/article_screen.dart';
 
@@ -33,6 +36,24 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
           'Если удачно вложить деньги, можно увеличить капитал в несколько раз...'
     },
   ];
+
+  final ChartData myChartData = ChartData(
+    points: [
+      const FlSpot(0, 3),
+      const FlSpot(2.6, 2),
+      const FlSpot(4.9, 5),
+      const FlSpot(6.8, 3.1),
+      const FlSpot(8, 4),
+      const FlSpot(9.5, 3),
+      const FlSpot(11, 4),
+    ],
+    xAxisLabel: 'Месяцы',
+    yAxisLabel: 'Доходы',
+    minX: 0,
+    maxX: 11,
+    minY: 0,
+    maxY: 6,
+  );
 
   void _addInvestment(double amount) {
     setState(() {
@@ -156,26 +177,51 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
                     }
                   },
                 ),
-              ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            SizedBox(
+            height: 140, 
+            child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: _investmentCards.length + 1,
+            separatorBuilder: (context, index) => const SizedBox(width: 8),
+            itemBuilder: (context, index) {
+              if (index < _investmentCards.length) {
+                final card = _investmentCards[index];
 
-              const SizedBox(height: 16),
-              // Guides Section
-              // Guides Section
-              const Text(
-                'Гайды',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Column(
-                children: _articles.map((article) {
-                  return _buildGuideTile(
-                    article['title']!,
-                    'Нажмите чтобы узнать подробнее...', // Краткое описание
-                    article['content']!,
-                  );
-                }).toList(),
-              ),
-            ],
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => InvestmentDetailedScreen(
+                          chartData: myChartData, 
+                          amount: _portfolioAmount,
+                          title: card['title'],
+                          color: card['color'],
+                        
+                        ),
+                      ),
+                    );
+                  },
+                  child: SizedBox(
+                    width: 160,
+                    child: _buildStrategyCard(
+                      card['title'],
+                      card['subtitle'],
+                      card['color'],
+                    ),
+                  ),
+                );
+              } else {
+                return SizedBox(
+                  width: 160,
+                  child: _buildAddInvestmentCard(),
+                );
+              }
+            },
+          ),
           ),
         ),
       ),
@@ -346,8 +392,50 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
       },
     );
   }
+  Widget _buildGuideTile(String title, String subtitle) {
+      return ListTile(
+        contentPadding: EdgeInsets.zero,
+        title: Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        subtitle: Text(subtitle, style: const TextStyle(fontSize: 14, color: Colors.grey)),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () {},
+      );
+    }
+  }
 
-  Widget _buildGuideTile(String title, String subtitle, String content) {
+  Widget _buildStrategyCard(
+    String title, String returnRate, Color color) {
+    return Expanded(
+      child: Container(
+        margin: const EdgeInsets.only(right: 8),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          children: [
+            Icon(Icons.monetization_on, size: 40, color: color),
+            const SizedBox(height: 8),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              returnRate,
+              style: const TextStyle(color: Colors.grey),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGuideTile(String title, String description) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: const CircleAvatar(
