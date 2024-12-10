@@ -1,4 +1,7 @@
 import 'package:app/bottom_sheet.dart';
+import 'package:app/investment_detailed_screen.dart';
+import 'package:app/model/model.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class InvestmentHomeScreen extends StatefulWidget {
@@ -17,13 +20,30 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
     {'title': 'Золото', 'subtitle': 'Индекс Золото (Банк России)', 'color': Colors.amber},
   ];
 
+  final ChartData myChartData = ChartData(
+    points: [
+      const FlSpot(0, 3),
+      const FlSpot(2.6, 2),
+      const FlSpot(4.9, 5),
+      const FlSpot(6.8, 3.1),
+      const FlSpot(8, 4),
+      const FlSpot(9.5, 3),
+      const FlSpot(11, 4),
+    ],
+    xAxisLabel: 'Месяцы',
+    yAxisLabel: 'Доходы',
+    minX: 0,
+    maxX: 11,
+    minY: 0,
+    maxY: 6,
+  );
+
   void _addInvestment(double amount) {
     setState(() {
       _portfolioAmount += amount;
     });
 
     // отправить данные на сервер
-
   }
 
   @override
@@ -114,28 +134,45 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
             SizedBox(
             height: 140, 
             child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: _investmentCards.length + 1, 
-              separatorBuilder: (context, index) => const SizedBox(width: 8), 
-              itemBuilder: (context, index) {
-                if (index < _investmentCards.length) {
-                  final card = _investmentCards[index];
-                  return SizedBox(
-                    width: 160, 
+            scrollDirection: Axis.horizontal,
+            itemCount: _investmentCards.length + 1,
+            separatorBuilder: (context, index) => const SizedBox(width: 8),
+            itemBuilder: (context, index) {
+              if (index < _investmentCards.length) {
+                final card = _investmentCards[index];
+
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => InvestmentDetailedScreen(
+                          chartData: myChartData, 
+                          amount: _portfolioAmount,
+                          title: card['title'],
+                          color: card['color'],
+                        
+                        ),
+                      ),
+                    );
+                  },
+                  child: SizedBox(
+                    width: 160,
                     child: _buildStrategyCard(
                       card['title'],
                       card['subtitle'],
                       card['color'],
                     ),
-                  );
-                } else {
-                  return SizedBox(
-                    width: 160,
-                    child: _buildAddInvestmentCard(),
-                  );
-                }
-              },
-            ),
+                  ),
+                );
+              } else {
+                return SizedBox(
+                  width: 160,
+                  child: _buildAddInvestmentCard(),
+                );
+              }
+            },
+          ),
           ),
 
             const SizedBox(height: 16),
@@ -329,7 +366,8 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
     }
   }
 
-  Widget _buildStrategyCard(String title, String returnRate, Color color) {
+  Widget _buildStrategyCard(
+    String title, String returnRate, Color color) {
     return Expanded(
       child: Container(
         margin: const EdgeInsets.only(right: 8),
