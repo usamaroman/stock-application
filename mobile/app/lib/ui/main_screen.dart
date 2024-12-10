@@ -1,5 +1,5 @@
-import 'package:app/bottom_sheet.dart';
-import 'package:app/investment_detailed_screen.dart';
+import 'package:app/ui/bottom_sheet.dart';
+import 'package:app/ui/investment_detailed_screen.dart';
 import 'package:app/model/model.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
