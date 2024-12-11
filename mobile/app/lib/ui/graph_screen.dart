@@ -1,5 +1,5 @@
-import 'package:app/separate_chart.dart';
-import 'package:app/main_screen.dart';
+import 'package:app/chart/separate_chart.dart';
+import 'package:app/ui/main_screen.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 

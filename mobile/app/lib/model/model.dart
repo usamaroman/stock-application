@@ -19,3 +19,25 @@ class ChartData {
     required this.maxY,
   });
 }
+
+ChartData convertToChartData(List<double> dollarRates) {
+  List<FlSpot> points = [];
+  for (int i = 0; i < dollarRates.length; i++) {
+    points.add(FlSpot(i.toDouble(), dollarRates[i]));
+  }
+
+  double minX = 0;
+  double maxX = dollarRates.length.toDouble();
+  double minY = dollarRates.reduce((value, element) => value < element ? value : element);
+  double maxY = dollarRates.reduce((value, element) => value > element ? value : element);
+
+  return ChartData(
+    points: points,
+    xAxisLabel: 'Дата', // Например, здесь можно поставить метки времени для оси X
+    yAxisLabel: 'Курс доллара',
+    minX: minX,
+    maxX: maxX,
+    minY: minY,
+    maxY: maxY,
+  );
+}

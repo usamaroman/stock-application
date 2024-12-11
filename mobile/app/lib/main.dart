@@ -1,5 +1,5 @@
-import 'package:app/graph_screen.dart';
-import 'package:app/main_screen.dart';
+import 'package:app/ui/graph_screen.dart';
+import 'package:app/ui/main_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {

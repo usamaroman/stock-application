@@ -1,10 +1,11 @@
-import 'package:app/bottom_sheet.dart';
-import 'package:app/investment_detailed_screen.dart';
+import 'package:app/game/game_screen.dart';
+import 'package:app/ui/bottom_sheet.dart';
+import 'package:app/ui/investment_detailed_screen.dart';
 import 'package:app/model/model.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:app/article_screen.dart';
-import 'package:app/article_screen2.dart';
+import 'package:app/ui/articles/article_screen.dart';
+import 'package:app/ui/articles/article_screen2.dart';
 
 class InvestmentHomeScreen extends StatefulWidget {
   const InvestmentHomeScreen({super.key});
@@ -196,13 +197,36 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            // Guides Section
-            // Guides Section
+                ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => InvestorSimulatorScreen()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[400], // Нейтральный цвет (можно выбрать любой другой)
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12), // Круглые углы
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24), // Размеры кнопки
+                ),
+                child: Text(
+                  'Начать игру "Симулятор инвестора"',
+                  style: TextStyle(
+                    color: Colors.black, // Цвет текста
+                    fontSize: 16, // Размер текста
+                  ),
+                ),
+              ),
+
             const Text(
               'Гайды',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
+        
+
             Column(
               children: _articles.asMap().entries.map((entry) {
                 final index = entry.key; // Индекс статьи
