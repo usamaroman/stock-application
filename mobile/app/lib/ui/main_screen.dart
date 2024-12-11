@@ -205,17 +205,17 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[400], // Нейтральный цвет (можно выбрать любой другой)
+                  backgroundColor: const Color.fromARGB(255, 188, 158, 209), // Нейтральный цвет (можно выбрать любой другой)
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12), // Круглые углы
+                    borderRadius: BorderRadius.circular(12), 
                   ),
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24), // Размеры кнопки
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24), 
                 ),
                 child: Text(
                   'Начать игру "Симулятор инвестора"',
                   style: TextStyle(
-                    color: Colors.black, // Цвет текста
-                    fontSize: 16, // Размер текста
+                    color: Colors.black, 
+                    fontSize: 16, 
                   ),
                 ),
               ),
@@ -229,13 +229,13 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
 
             Column(
               children: _articles.asMap().entries.map((entry) {
-                final index = entry.key; // Индекс статьи
-                final article = entry.value; // Содержимое статьи
+                final index = entry.key;
+                final article = entry.value; 
                 return _buildGuideTile(
                   article['title']!,
-                  'Нажмите чтобы узнать подробнее...', // Краткое описание
+                  'Нажмите чтобы узнать подробнее...', 
                   article['content']!,
-                  index, // Передаем индекс статьи
+                  index, 
                 );
               }).toList(),
             ),
@@ -468,29 +468,4 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
   );
 }
 
-// Widget _buildGuideTile(BuildContext context, String title, String content) {
-//   return ListTile(
-//     contentPadding: EdgeInsets.zero,
-//     leading: const CircleAvatar(
-//       backgroundColor: Colors.blueAccent,
-//       radius: 24,
-//     ),
-//     title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-//     subtitle: Text(
-//       content,
-//       style: const TextStyle(color: Colors.grey),
-//       maxLines: 2,
-//       overflow: TextOverflow.ellipsis,
-//     ),
-//     trailing: const Icon(Icons.chevron_right),
-//     onTap: () {
-//       Navigator.push(
-//         context,
-//         MaterialPageRoute(
-//           builder: (context) => ArticleScreen(title: title, content: content),
-//         ),
-//       );
-//     },
-//   );
-// }
 }

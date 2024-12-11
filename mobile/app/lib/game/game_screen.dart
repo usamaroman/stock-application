@@ -11,10 +11,10 @@ class InvestorSimulatorScreen extends StatefulWidget {
 class _InvestorSimulatorScreenState extends State<InvestorSimulatorScreen> {
   double _balance = 10000.0; // Начальный баланс
   Map<String, double> _assets = {
-    "Акции": 100.0, // Начальная цена акций
-    "Криптовалюта": 200.0, // Начальная цена криптовалюты
-    "Недвижимость": 500.0, // Начальная цена недвижимости
-    "Биржа": 1000.0, // Начальная цена на бирже
+    "Акции": 100.0, 
+    "Криптовалюта": 200.0, 
+    "Недвижимость": 500.0, 
+    "Биржа": 1000.0, 
   };
   Map<String, double> _previousPrices = {
     "Акции": 100.0,

@@ -1,11 +1,8 @@
 import 'dart:math';
 import 'package:app/chart/chart.dart';
-import 'package:app/chart/dropdown.dart';
-import 'package:app/domain/api_service.dart';
 import 'package:app/model/model.dart';
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
-
+import 'package:intl/intl.dart';
 
 class InvestmentDetailedScreen extends StatefulWidget {
   final ChartData chartData;
@@ -27,42 +24,58 @@ class InvestmentDetailedScreen extends StatefulWidget {
 }
 
 class _InvestmentDetailedScreenState extends State<InvestmentDetailedScreen> {
-  // final ApiService _apiService = ApiService(baseUrl: 'http://localhost:8080');
+  // Закомментировано всё, что связано с API
+  // final ApiService _apiService = ApiService();
   List<double>? _dollarRates;
   bool _isLoading = false;
   String _errorMessage = '';
 
-
-  List<double> generateMockData(List<double> previousData) {
-    final random = Random();
-    return previousData.map((rate) {
-      // Вносим небольшие изменения в данные (например, +\- 0.05)
-      double change = (random.nextDouble() - 0.5) * 0.1; // случайное изменение от -0.05 до +0.05
-      return rate + change;
-    }).toList();
+  String _formatDate(DateTime date) {
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    return formatter.format(date);
   }
 
-  // void _fetchData(String from, String to) async {
-  //   setState(() {
-  //     _isLoading = true;
-  //     _errorMessage = '';
-  //   });
+void _generateMockData(String from, String to) async {
+  setState(() {
+    _isLoading = true;
+    _errorMessage = '';
+  });
 
-  //   try {
-  //     final rates = await _apiService.fetchDollarRates(fromDate: from, toDate: to);
-  //     setState(() {
-  //       _dollarRates = rates;
-  //     });
-  //   } catch (e) {
-  //     setState(() {
-  //       _errorMessage = e.toString();
-  //     });
-  //   } finally {
-  //     setState(() {
-  //       _isLoading = false;
-  //     });
-  //   }
-  // }
+  try {
+    final random = Random();
+    double previousRate = 70.0; // начальная цена
+    List<double> mockData = [];
+
+  
+    for (int i = 0; i < 30; i++) {
+
+      double change = (random.nextDouble() - 0.5) * 1.0; 
+      double newRate = (previousRate + change).clamp(65.0, 75.0); 
+      mockData.add(newRate);
+      previousRate = newRate;
+    }
+
+    setState(() {
+      _dollarRates = mockData;
+    });
+  } catch (e) {
+    setState(() {
+      _errorMessage = e.toString();
+    });
+  } finally {
+    setState(() {
+      _isLoading = false;
+    });
+  }
+}
+
+
+  @override
+  void initState() {
+    super.initState();
+    // Инициализация с моковыми данными
+    _generateMockData('2024-01-01', '2024-12-31');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,50 +113,30 @@ class _InvestmentDetailedScreenState extends State<InvestmentDetailedScreen> {
             onSelected: (selectedValue) {
               final now = DateTime.now();
               String fromDate;
-              String toDate = now.toIso8601String().split('T').first;
+              String toDate = _formatDate(now); // формируем текущую дату
 
               switch (selectedValue) {
                 case '1M':
-                  fromDate = DateTime(now.year, now.month - 1, now.day)
-                      .toIso8601String()
-                      .split('T')
-                      .first;
+                  fromDate = _formatDate(DateTime(now.year, now.month - 1, now.day));
                   break;
                 case '3M':
-                  fromDate = DateTime(now.year, now.month - 3, now.day)
-                      .toIso8601String()
-                      .split('T')
-                      .first;
+                  fromDate = _formatDate(DateTime(now.year, now.month - 3, now.day));
                   break;
                 case '6M':
-                  fromDate = DateTime(now.year, now.month - 6, now.day)
-                      .toIso8601String()
-                      .split('T')
-                      .first;
+                  fromDate = _formatDate(DateTime(now.year, now.month - 6, now.day));
                   break;
                 case '1Y':
-                  fromDate = DateTime(now.year - 1, now.month, now.day)
-                      .toIso8601String()
-                      .split('T')
-                      .first;
+                  fromDate = _formatDate(DateTime(now.year - 1, now.month, now.day));
                   break;
                 case '2Y':
-                  fromDate = DateTime(now.year - 2, now.month, now.day)
-                      .toIso8601String()
-                      .split('T')
-                      .first;
+                  fromDate = _formatDate(DateTime(now.year - 2, now.month, now.day));
                   break;
                 default:
                   fromDate = toDate;
               }
 
-              // Здесь мы либо фетчим новые данные, либо генерируем замоканные данные
-              if (_dollarRates != null) {
-                // Используем замоканные данные для обновления графика с минимальными отклонениями
-                setState(() {
-                  _dollarRates = generateMockData(_dollarRates!);
-                });
-              } 
+              // Генерация моковых данных
+              _generateMockData(fromDate, toDate);
             },
           ),
           const SizedBox(height: 16),
