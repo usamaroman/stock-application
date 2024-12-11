@@ -4,6 +4,7 @@ import 'package:app/model/model.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:app/article_screen.dart';
+import 'package:app/article_screen2.dart';
 
 class InvestmentHomeScreen extends StatefulWidget {
   const InvestmentHomeScreen({super.key});
@@ -205,11 +206,14 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
             ),
             const SizedBox(height: 8),
             Column(
-              children: _articles.map((article) {
+              children: _articles.asMap().entries.map((entry) {
+                final index = entry.key; // Индекс статьи
+                final article = entry.value; // Содержимое статьи
                 return _buildGuideTile(
                   article['title']!,
                   'Нажмите чтобы узнать подробнее...', // Краткое описание
                   article['content']!,
+                  index, // Передаем индекс статьи
                 );
               }).toList(),
             ),
@@ -383,7 +387,8 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
     );
   }
 
-  Widget _buildGuideTile(String title, String subtitle, String content) {
+  Widget _buildGuideTile(
+      String title, String subtitle, String content, int index) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: const CircleAvatar(
@@ -399,12 +404,25 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
       ),
       trailing: const Icon(Icons.chevron_right),
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ArticleScreen(title: title, content: content),
-          ),
-        );
+        if (index == 0) {
+          // Первая статья открывает ArticleScreen
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  ArticleScreen(title: title, content: content),
+            ),
+          );
+        } else if (index == 1) {
+          // Вторая статья открывает ArticleScreen2
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  ArticleScreen2(title: title, content: content),
+            ),
+          );
+        }
       },
     );
   }
@@ -467,8 +485,6 @@ Widget _buildGuideTile(BuildContext context, String title, String content) {
   );
 }
 
-
-
 Widget _buildStrategyCard(String title, String returnRate, Color color) {
   return Expanded(
     child: Container(
@@ -503,4 +519,3 @@ Widget _buildStrategyCard(String title, String returnRate, Color color) {
     ),
   );
 }
-

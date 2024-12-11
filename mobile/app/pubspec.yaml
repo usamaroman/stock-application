@@ -63,6 +63,9 @@ flutter:
     - assets/images/investment_growth.jpg
     - assets/images/investment_risk.jpg
     - assets/images/financial_instruments.jpg
+    - assets/images/diversion.jpg
+    - assets/images/diversion2.jpg
+    - assets/images/diversion3.jpg
 
   # To add assets to your application, add an assets section, like this:
   # assets:
