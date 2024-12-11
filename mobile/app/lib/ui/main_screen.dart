@@ -1,3 +1,4 @@
+import 'package:app/domain_api/api_service.dart';
 import 'package:app/game/game_screen.dart';
 import 'package:app/ui/bottom_sheet.dart';
 import 'package:app/ui/investment_detailed_screen.dart';
@@ -62,12 +63,39 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
     maxY: 6,
   );
 
-  void _addInvestment(double amount) {
+ final ApiService _apiService = ApiService(baseUrl: 'http://localhost:8080');
+
+  void _addInvestment(double amount) async {
     setState(() {
       _portfolioAmount += amount;
     });
 
-    // отправить данные на сервер
+    try {
+      await _apiService.sendInvestmentData(amount: amount);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Ошибка при отправке данных: $e')),
+      );
+    }
+  }
+
+ @override
+  void initState() {
+    super.initState();
+    _fetchAllInvestments();
+  }
+
+   Future<void> _fetchAllInvestments() async {
+    try {
+      final investments = await _apiService.fetchAllInvestments();
+      setState(() {
+        _portfolioAmount = investments.fold(0.0, (sum, investment) => sum + investment);
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Ошибка при загрузке данных: $e')),
+      );
+    }
   }
 
   @override
@@ -127,8 +155,8 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
                       _showInvestmentBottomSheet(context);
                     },
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.green, // Button text color
-                      backgroundColor: Colors.white, // Button background color
+                      foregroundColor: Colors.green, 
+                      backgroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -205,7 +233,7 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 188, 158, 209), // Нейтральный цвет (можно выбрать любой другой)
+                  backgroundColor: const Color.fromARGB(255, 188, 158, 209),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12), 
                   ),
@@ -219,7 +247,7 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
                   ),
                 ),
               ),
-
+            const SizedBox(height: 16),
             const Text(
               'Гайды',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -453,7 +481,6 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
     trailing: const Icon(Icons.chevron_right),
     onTap: () {
       if (index == 0) {
-        // Первая статья открывает ArticleScreen
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -462,7 +489,6 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
           ),
         );
       } else if (index == 1) {
-        // Вторая статья открывает ArticleScreen2
         Navigator.push(
           context,
           MaterialPageRoute(

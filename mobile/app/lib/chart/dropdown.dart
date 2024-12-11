@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DropdownTimeFilter extends StatefulWidget {
-  final Function(String) onSelected; // Коллбэк для обработки выбранного значения
+  final Function(String) onSelected;
 
   const DropdownTimeFilter({super.key, required this.onSelected});
 
@@ -10,26 +10,25 @@ class DropdownTimeFilter extends StatefulWidget {
 }
 
 class _DropdownTimeFilterState extends State<DropdownTimeFilter> {
-  // Список значений
   late final List<String> timeRanges;
-  String selectedValue = '1 год'; // Дефолтное значение
+  String selectedValue = '1 год';
 
   @override
   void initState() {
     super.initState();
-    timeRanges = _generateTimeRanges(); // Генерация списка значений
+    timeRanges = _generateTimeRanges();
   }
 
   List<String> _generateTimeRanges() {
     List<String> ranges = [];
     for (int months = 3; months <= 60; months += 3) {
       if (months < 12) {
-        ranges.add('$months месяца'); // Значения в месяцах
+        ranges.add('$months месяца');
       } else {
         final years = months ~/ 12;
         final remainingMonths = months % 12;
         if (remainingMonths == 0) {
-          ranges.add('$years ${_pluralizeYears(years)}'); // Только года
+          ranges.add('$years ${_pluralizeYears(years)}');
         } else {
           ranges.add(
               '$years ${_pluralizeYears(years)} $remainingMonths ${_pluralizeMonths(remainingMonths)}');
@@ -74,7 +73,7 @@ class _DropdownTimeFilterState extends State<DropdownTimeFilter> {
           setState(() {
             selectedValue = newValue;
           });
-          widget.onSelected(newValue); // Вызываем коллбэк
+          widget.onSelected(newValue);
         }
       },
     );

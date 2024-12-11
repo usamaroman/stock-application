@@ -33,7 +33,7 @@ ChartData convertToChartData(List<double> dollarRates) {
 
   return ChartData(
     points: points,
-    xAxisLabel: 'Дата', // Например, здесь можно поставить метки времени для оси X
+    xAxisLabel: 'Дата',
     yAxisLabel: 'Курс доллара',
     minX: minX,
     maxX: maxX,

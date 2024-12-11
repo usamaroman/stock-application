@@ -18,7 +18,6 @@ void showInvestmentBottomSheet(BuildContext context) {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Close Button
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -38,7 +37,6 @@ void showInvestmentBottomSheet(BuildContext context) {
                 ],
               ),
               const SizedBox(height: 16),
-              // Input Field
               TextField(
                 decoration: InputDecoration(
                   labelText: 'Enter amount',
@@ -50,11 +48,9 @@ void showInvestmentBottomSheet(BuildContext context) {
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 16),
-              // Invest Button
               ElevatedButton(
                 onPressed: () {
-                  // Add your action here
-                  Navigator.pop(context); // Close BottomSheet after action
+                  Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,

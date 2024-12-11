@@ -19,7 +19,6 @@ class ArticleScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Title
             Text(
               title,
               style: const TextStyle(
@@ -30,13 +29,10 @@ class ArticleScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Image at the top of the article
             Image.asset(
                 'assets/images/investment_intro.jpg'), // Add an image to introduce the topic
 
             const SizedBox(height: 16),
-
-            // Content of the article with styled text and headings
 
             const Text(
               'Если удачно вложить деньги, можно увеличить капитал в несколько раз. Например, в 2008 году стоимость акции Volkswagen выросла с 211 евро до 1000 евро меньше чем за два дня.',
@@ -71,7 +67,6 @@ class ArticleScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Add an image that reflects financial tools or instruments (e.g., stock, bond)
             Image.asset('assets/images/financial_instruments.jpg'),
 
             const SizedBox(height: 16),
@@ -82,7 +77,6 @@ class ArticleScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Conclusion or call to action
             const Text(
               'Итак, инвестиции — это важный способ увеличения капитала и защиты от инфляции. В следующей статье мы расскажем о наиболее популярных финансовых инструментах и их рисках.',
               style: TextStyle(fontSize: 16, color: Colors.black87),

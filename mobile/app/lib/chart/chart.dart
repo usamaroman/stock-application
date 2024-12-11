@@ -13,7 +13,7 @@ class LineChartSample2 extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Container(
-          height: 300,  // Фиксированная высота 300 пикселей
+          height: 300,
           child: LineChart(
             LineChartData(
               gridData: FlGridData(

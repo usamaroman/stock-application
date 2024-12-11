@@ -9,7 +9,7 @@ class InvestorSimulatorScreen extends StatefulWidget {
 }
 
 class _InvestorSimulatorScreenState extends State<InvestorSimulatorScreen> {
-  double _balance = 10000.0; // Начальный баланс
+  double _balance = 10000.0;
   Map<String, double> _assets = {
     "Акции": 100.0, 
     "Криптовалюта": 200.0, 
@@ -35,25 +35,25 @@ class _InvestorSimulatorScreenState extends State<InvestorSimulatorScreen> {
     "Биржа": 0.0,
   };
 
-  // Счетчик для случайных колебаний цены
+
   void _simulateMarket() {
     Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
         _assets.forEach((key, value) {
-          // 5% случайные колебания
+        
           _assets[key] = value * (1 + (Random().nextDouble() - 0.5) * 0.05);
         });
       });
     });
   }
 
-  // Инвестирование в актив
+
   void _invest(String asset) {
     if (_balance >= _assets[asset]!) {
       setState(() {
         _investments[asset] = _investments[asset]! + 1;
         _balance -= _assets[asset]!;
-        _investedAmount[asset] = _investedAmount[asset]! + _assets[asset]!; // Увеличиваем вложенную сумму
+        _investedAmount[asset] = _investedAmount[asset]! + _assets[asset]!; 
       });
     }
   }
@@ -63,37 +63,36 @@ class _InvestorSimulatorScreenState extends State<InvestorSimulatorScreen> {
     if (_investments[asset]! > 0) {
       setState(() {
         _investments[asset] = _investments[asset]! - 1;
-        _balance += _assets[asset]!; // Возврат стоимости актива
-        _investedAmount[asset] = _investedAmount[asset]! - _assets[asset]!; // Уменьшаем вложенную сумму
+        _balance += _assets[asset]!; 
+        _investedAmount[asset] = _investedAmount[asset]! - _assets[asset]!;
       });
     }
   }
 
-  // Рассчитываем процентное изменение
+
   double _calculatePercentageChange(String asset) {
     double previousPrice = _previousPrices[asset]!;
     double currentPrice = _assets[asset]!;
     double percentageChange = ((currentPrice - previousPrice) / previousPrice) * 100;
-    _previousPrices[asset] = currentPrice; // Обновляем цену
+    _previousPrices[asset] = currentPrice;
 
-    // Гарантируем, что процентное изменение не будет отрицательным
+
     return percentageChange < 0 ? 0.0 : percentageChange;
   }
 
-  // Рассчитываем текущий заработок
+ 
   double _calculateEarnings(String asset) {
     double currentPrice = _assets[asset]!;
     double invested = _investedAmount[asset]!;
     double earnings = (currentPrice - invested) * _investments[asset]!;
 
-    // Гарантируем, что заработок не будет отрицательным
     return earnings < 0 ? 0.0 : earnings;
   }
 
   @override
   void initState() {
     super.initState();
-    _simulateMarket(); // Начинаем симуляцию рынка сразу
+    _simulateMarket(); 
   }
 
   @override
@@ -104,10 +103,8 @@ class _InvestorSimulatorScreenState extends State<InvestorSimulatorScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Баланс игрока
             Text('Баланс: ${_balance.toStringAsFixed(2)} ₽', style: TextStyle(fontSize: 24)),
             SizedBox(height: 20),
-            // Одна карточка для всех категорий
             Card(
               elevation: 5,
               margin: EdgeInsets.symmetric(vertical: 10),
@@ -129,7 +126,7 @@ class _InvestorSimulatorScreenState extends State<InvestorSimulatorScreen> {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Заголовок категории
+                
                           Text(
                             asset,
                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -175,7 +172,7 @@ class _InvestorSimulatorScreenState extends State<InvestorSimulatorScreen> {
                         ],
                       );
                     }).toList(),
-                    // Информация для начинающего инвестора
+              
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(

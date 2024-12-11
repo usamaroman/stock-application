@@ -31,14 +31,12 @@ class ArticleScreen2 extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Content of the article with styled text and headings
-
             Text('Диверсификация портфеля является базовым принципом основ инвестиций, который позволяет снизить риски и улучшить потенциальные финансовые результаты. Этот процесс включает в себя распределение инвестиций между различными активами и рынками для минимизации воздействия негативных событий на один актив или сектор.',
               style: const TextStyle(fontSize: 16, color: Colors.black87),
             ),
             const SizedBox(height: 16),
             Image.asset(
-                'assets/images/diversion.jpg'), // A relevant image about stock growth
+                'assets/images/diversion.jpg'),
 
             const SizedBox(height: 16),
 
@@ -48,7 +46,6 @@ class ArticleScreen2 extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Another image that illustrates the risks of investment
             Image.asset('assets/images/diversion2.jpg'),
 
             const SizedBox(height: 16),
@@ -65,7 +62,6 @@ class ArticleScreen2 extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Add an image that reflects financial tools or instruments (e.g., stock, bond)
             Image.asset('assets/images/diversion3.jpg'),
 
             const SizedBox(height: 16),
@@ -76,7 +72,6 @@ class ArticleScreen2 extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Conclusion or call to action
             Text(
               'Подведем итоги и выделим ключевые моменты, которые могут помочь в этом увлекательной, но сложной отрасли. Как мы уже писали ранее, инвестирование это не только способ увеличения капитала, но и средство достижения личных и финансовых целей.',
               style: const TextStyle(fontSize: 16, color: Colors.black87),

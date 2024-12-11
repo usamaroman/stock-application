@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:app/chart/chart.dart';
+import 'package:app/domain_api/api_service.dart';
 import 'package:app/model/model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -24,8 +25,7 @@ class InvestmentDetailedScreen extends StatefulWidget {
 }
 
 class _InvestmentDetailedScreenState extends State<InvestmentDetailedScreen> {
-  // Закомментировано всё, что связано с API
-  // final ApiService _apiService = ApiService();
+  final ApiService _apiService = ApiService(baseUrl: 'http://localhost:8080');
   List<double>? _dollarRates;
   bool _isLoading = false;
   String _errorMessage = '';
@@ -35,46 +35,54 @@ class _InvestmentDetailedScreenState extends State<InvestmentDetailedScreen> {
     return formatter.format(date);
   }
 
-void _generateMockData(String from, String to) async {
-  setState(() {
-    _isLoading = true;
-    _errorMessage = '';
-  });
+  Future<void> _fetchDollarPrediction(int duration) async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = '';
+    });
 
-  try {
-    final random = Random();
-    double previousRate = 70.0; // начальная цена
-    List<double> mockData = [];
-
-  
-    for (int i = 0; i < 30; i++) {
-
-      double change = (random.nextDouble() - 0.5) * 1.0; 
-      double newRate = (previousRate + change).clamp(65.0, 75.0); 
-      mockData.add(newRate);
-      previousRate = newRate;
+    try {
+      final rates = await _apiService.fetchDollarPrediction(duration: duration);
+      setState(() {
+        _dollarRates = rates;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = e.toString();
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
-
-    setState(() {
-      _dollarRates = mockData;
-    });
-  } catch (e) {
-    setState(() {
-      _errorMessage = e.toString();
-    });
-  } finally {
-    setState(() {
-      _isLoading = false;
-    });
   }
-}
 
+  Future<void> _fetchGoldPrediction(int duration) async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = '';
+    });
+
+    try {
+      final rates = await _apiService.fetchGoldPrediction(duration: duration);
+      setState(() {
+        _dollarRates = rates;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = e.toString();
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    // Инициализация с моковыми данными
-    _generateMockData('2024-01-01', '2024-12-31');
+    _fetchDollarPrediction(12);
   }
 
   @override
@@ -83,7 +91,6 @@ void _generateMockData(String from, String to) async {
       appBar: AppBar(title: const Text('Детали инвестиций')),
       body: Column(
         children: [
-          // Карточка с фоном
           Container(
             padding: const EdgeInsets.all(16),
             width: MediaQuery.of(context).size.width * 0.9,
@@ -108,35 +115,32 @@ void _generateMockData(String from, String to) async {
             ),
           ),
           const SizedBox(height: 16),
-          // Дропдаун
           DropdownTimeFilter(
             onSelected: (selectedValue) {
               final now = DateTime.now();
-              String fromDate;
-              String toDate = _formatDate(now); // формируем текущую дату
+              int duration;
 
               switch (selectedValue) {
                 case '1M':
-                  fromDate = _formatDate(DateTime(now.year, now.month - 1, now.day));
+                  duration = 1;
                   break;
                 case '3M':
-                  fromDate = _formatDate(DateTime(now.year, now.month - 3, now.day));
+                  duration = 3;
                   break;
                 case '6M':
-                  fromDate = _formatDate(DateTime(now.year, now.month - 6, now.day));
+                  duration = 6;
                   break;
                 case '1Y':
-                  fromDate = _formatDate(DateTime(now.year - 1, now.month, now.day));
+                  duration = 12;
                   break;
                 case '2Y':
-                  fromDate = _formatDate(DateTime(now.year - 2, now.month, now.day));
+                  duration = 24;
                   break;
                 default:
-                  fromDate = toDate;
+                  duration = 12;
               }
 
-              // Генерация моковых данных
-              _generateMockData(fromDate, toDate);
+              _fetchDollarPrediction(duration);
             },
           ),
           const SizedBox(height: 16),
@@ -150,13 +154,6 @@ void _generateMockData(String from, String to) async {
                             ? convertToChartData(_dollarRates!)
                             : widget.chartData,
                       ),
-          ),
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text(
-              'Текст о графике, например: курс изменился на 2%.',
-              style: TextStyle(fontSize: 16),
-            ),
           ),
         ],
       ),
