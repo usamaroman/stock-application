@@ -17,7 +17,9 @@ import (
 )
 
 var store = map[string]any{
-	"gold": nil,
+	"gold":   nil,
+	"dollar": nil,
+	"amount": 0,
 }
 
 type Server struct {
@@ -49,30 +51,18 @@ func main() {
 			return
 		}
 
-		resp, err := http.Get(fmt.Sprintf("https://iss.moex.com/iss/statistics/engines/futures/markets/indicativerates/securities/USD/RUB.json?from=%s&till=%s&iss.meta=off", req.From, req.To))
+		res, err := fetchDollar(req.From, req.To)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, err.Error())
 			return
-		}
-		defer resp.Body.Close()
-		body, err := io.ReadAll(resp.Body)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, err.Error())
-			return
-		}
-		var result Dollar
-		if err := json.Unmarshal(body, &result); err != nil {
-			ctx.JSON(http.StatusInternalServerError, err.Error())
-			return
-		}
-
-		res := make([]float64, 0, len(result.Securities.Data))
-
-		for _, d := range result.Securities.Data {
-			res = append(res, d[3].(float64))
 		}
 
 		ctx.JSON(http.StatusOK, res)
+	})
+	srv.router.POST("/:amount", func(ctx *gin.Context) {
+		p := ctx.Param("amount")
+
+		store["amount"] = p
 	})
 	srv.router.GET("/health", func(ctx *gin.Context) {
 		resp, err := talkToOllama(defaultOllamaURL, Request{
@@ -93,10 +83,70 @@ func main() {
 		log.Println(resp.Message.Content)
 		ctx.JSON(http.StatusOK, resp.Message.Content)
 	})
-	srv.router.GET("/gold", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, store["gold"])
+	srv.router.GET("/", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{
+			"gold":   store["gold"],
+			"dollar": store["dollar"],
+			"amount": store["amount"],
+		})
 	})
 
+	srv.router.POST("/calculate_dollar", func(ctx *gin.Context) {
+		var req struct {
+			Duration int `json:"duration"`
+		}
+
+		if err := ctx.ShouldBindJSON(&req); err != nil {
+			ctx.JSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		dollars, err := fetchDollar("2024-12-01", "2024-12-11")
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		log.Println("dollars", dollars)
+		msg := fmt.Sprintf("цена доллара сейчас в последнии 11 дней %v, предскажи цену рубля на ближайшие %d месяцeв", dollars, req.Duration)
+
+		log.Println(msg)
+
+		resp, err := talkToOllama(defaultOllamaURL, Request{
+			Model:  "stockmodel",
+			Stream: false,
+			Messages: []Message{
+				{
+					Role:    "user",
+					Content: msg,
+				},
+			},
+		})
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		log.Println(resp.Message.Content)
+
+		str := strings.Trim(strings.Trim(resp.Message.Content, "["), "]")
+		prices := strings.Split(str, ",")
+
+		res := make([]int, 0, len(prices))
+		for _, p := range prices {
+			i, err := strconv.Atoi(p)
+			if err != nil {
+				ctx.JSON(http.StatusInternalServerError, err.Error())
+				return
+			}
+
+			res = append(res, i)
+		}
+
+		store["dollar"] = res
+
+		ctx.JSON(http.StatusOK, res)
+	})
 	srv.router.POST("/calculate_gold", func(ctx *gin.Context) {
 		var req struct {
 			Amount   float64 `json:"amount"`
@@ -248,4 +298,29 @@ func fetchGoldPrice() (*GoldPriceResponse, error) {
 	}
 
 	return &result, nil
+}
+
+func fetchDollar(from, to string) ([]float64, error) {
+	resp, err := http.Get(fmt.Sprintf("https://iss.moex.com/iss/statistics/engines/futures/markets/indicativerates/securities/USD/RUB.json?from=%s&till=%s&iss.meta=off", from, to))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+
+	if err != nil {
+		return nil, err
+	}
+	var result Dollar
+	if err := json.Unmarshal(body, &result); err != nil {
+		return nil, err
+	}
+
+	res := make([]float64, 0, len(result.Securities.Data))
+
+	for _, d := range result.Securities.Data {
+		res = append(res, d[3].(float64))
+	}
+
+	return res, nil
 }
