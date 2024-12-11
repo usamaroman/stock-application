@@ -460,42 +460,49 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
   }
 
   Widget _buildGuideTile(
-      String title, String subtitle, String content, int index) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      leading: const CircleAvatar(
-        backgroundColor: Colors.blueAccent,
-        radius: 24,
-      ),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-      subtitle: Text(
-        subtitle,
-        style: const TextStyle(color: Colors.grey),
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-      ),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () {
-        if (index == 0) {
-          // Первая статья открывает ArticleScreen
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  ArticleScreen(title: title, content: content),
-            ),
-          );
-        } else if (index == 1) {
-          // Вторая статья открывает ArticleScreen2
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  ArticleScreen2(title: title, content: content),
-            ),
-          );
-        }
+  String title, String subtitle, String content, int index) {
+  // List of image URLs corresponding to each article
+  List<String> imageUrls = [
+    'https://248006.selcdn.ru/main/iblock/5c7/5c77a418f946679b5018012a12a565a4/5decd0995a033381b90522db11a85561.jpg',  // Image for the first article
+    'https://static.ifxdb.com/static-content/607/PX241_800.jpg',  // Image for the second article
+    // Add more images for other articles if needed
+  ];
+
+  return ListTile(
+    contentPadding: EdgeInsets.zero,
+    leading: CircleAvatar(
+      radius: 24,
+      backgroundImage: NetworkImage(imageUrls[index]),  // Get image for the specific article
+    ),
+    title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+    subtitle: Text(
+      subtitle,
+      style: const TextStyle(color: Colors.grey),
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+    ),
+    trailing: const Icon(Icons.chevron_right),
+    onTap: () {
+      if (index == 0) {
+        // Первая статья открывает ArticleScreen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                ArticleScreen(title: title, content: content),
+          ),
+        );
+      } else if (index == 1) {
+        // Вторая статья открывает ArticleScreen2
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                ArticleScreen2(title: title, content: content),
+          ),
+        );
       }
+    },
   );
 }
 
