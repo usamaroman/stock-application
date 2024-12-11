@@ -29,8 +29,7 @@
 Склонируйте репозиторий на вашу локальную машину:
 
 ```bash
-git clone [<ссылка_на_репозиторий>](https://github.com/usamaroman/stock-application.git)
-cd backend
+git clone https://github.com/usamaroman/stock-application.git
 ```
 
 ### Шаг 2: Установка и создание модели LLaMA
