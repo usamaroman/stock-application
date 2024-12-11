@@ -218,50 +218,9 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
-        onTap: (index) {},
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Главная'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.bar_chart), label: 'Продукт'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.monetization_on), label: 'Транзакции'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Аккаунт'),
-        ],
-      ),
     );
   }
 
-  // Widget _buildStrategyCard(String title, String subtitle, Color color) {
-  //   return Container(
-  //     padding: const EdgeInsets.all(16),
-  //     decoration: BoxDecoration(
-  //       color: color.withOpacity(0.2),
-  //       borderRadius: BorderRadius.circular(16),
-  //     ),
-  //     child: Column(
-  //       children: [
-  //         Icon(Icons.monetization_on, size: 40, color: color),
-  //         const SizedBox(height: 8),
-  //         Text(
-  //           title,
-  //           style: const TextStyle(
-  //             fontSize: 16,
-  //             fontWeight: FontWeight.bold,
-  //           ),
-  //         ),
-  //         const SizedBox(height: 4),
-  //         Text(
-  //           subtitle,
-  //           style: const TextStyle(color: Colors.grey),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   Widget _buildStrategyCard(String title, String returnRate, Color color) {
   return Expanded(
@@ -315,20 +274,6 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
     );
   }
 
-  Widget _buildBottomNavigationBar() {
-    return BottomNavigationBar(
-      currentIndex: 0,
-      onTap: (index) {},
-      selectedItemColor: Colors.black,
-      unselectedItemColor: Colors.grey,
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Главная'),
-        BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Продукт'),
-        BottomNavigationBarItem(icon: Icon(Icons.monetization_on), label: 'Транзакции'),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Аккаунт'),
-      ],
-    );
-  }
 
   void _showInvestmentBottomSheet(BuildContext context) {
     TextEditingController _controller = TextEditingController();
