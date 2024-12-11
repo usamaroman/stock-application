@@ -29,14 +29,6 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
     },
   ];
 
-  final List<Map<String, String>> _articles = [
-    {
-      'title': 'Какие бывают инвестиции',
-      'content':
-          'Если удачно вложить деньги, можно увеличить капитал в несколько раз...'
-    },
-  ];
-
   final ChartData myChartData = ChartData(
     points: [
       const FlSpot(0, 3),
@@ -80,127 +72,108 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
           ),
         ],
       ),
-      body: Container(
-        color: Colors.white, // Задний фон белого цвета
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Welcome Text
-              const Text(
-                'Добро пожаловать!',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.green[400],
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Общая сумма инвестиций',
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'RUB ${_portfolioAmount.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        _showInvestmentBottomSheet(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.green,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      ),
-                      child: const Text('Инвестировать'),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Стратегии',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text('Смотреть все'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              SizedBox(
-                height: 140,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _investmentCards.length + 1,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(width: 8),
-                  itemBuilder: (context, index) {
-                    if (index < _investmentCards.length) {
-                      final card = _investmentCards[index];
-                      return SizedBox(
-                        width: 160,
-                        child: _buildStrategyCard(
-                          card['title'],
-                          card['subtitle'],
-                          card['color'],
-                        ),
-                      );
-                    } else {
-                      return SizedBox(
-                        width: 160,
-                        child: _buildAddInvestmentCard(),
-                      );
-                    }
-                  },
-                ),
-              ],
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Добро пожаловать!',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            SizedBox(
-            height: 140, 
-            child: ListView.separated(
+            _buildPortfolioSummary(),
+            const SizedBox(height: 16),
+            _buildStrategySection(),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+      bottomNavigationBar: _buildBottomNavigationBar(),
+    );
+  }
+
+  Widget _buildPortfolioSummary() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.green[400],
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Общая сумма инвестиций',
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'RUB ${_portfolioAmount.toStringAsFixed(2)}',
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          ElevatedButton(
+            onPressed: () => _showInvestmentBottomSheet(context),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.green,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+            ),
+            child: const Text('Инвестировать'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStrategySection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Стратегии',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            TextButton(
+              onPressed: () {},
+              child: const Text('Смотреть все'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          height: 140,
+          child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: _investmentCards.length + 1,
             separatorBuilder: (context, index) => const SizedBox(width: 8),
             itemBuilder: (context, index) {
               if (index < _investmentCards.length) {
                 final card = _investmentCards[index];
-
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => InvestmentDetailedScreen(
-                          chartData: myChartData, 
+                          chartData: myChartData,
                           amount: _portfolioAmount,
                           title: card['title'],
                           color: card['color'],
-                        
                         ),
                       ),
                     );
@@ -222,73 +195,36 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
               }
             },
           ),
-          ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        currentIndex: 0,
-        onTap: (index) {},
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Главная'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.bar_chart), label: 'Продукт'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.monetization_on), label: 'Транзакции'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Аккаунт'),
-        ],
-      ),
+      ],
     );
   }
 
-  void _addCustomInvestmentCard() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        TextEditingController titleController = TextEditingController();
-        TextEditingController subtitleController = TextEditingController();
-
-        return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: const Text('Добавить тип инвестиции'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: titleController,
-                decoration: const InputDecoration(labelText: 'Название'),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: subtitleController,
-                decoration: const InputDecoration(labelText: 'Описание'),
-              ),
-            ],
+  Widget _buildStrategyCard(String title, String subtitle, Color color) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        children: [
+          Icon(Icons.monetization_on, size: 40, color: color),
+          const SizedBox(height: 8),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Отмена'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _investmentCards.add({
-                    'title': titleController.text,
-                    'subtitle': subtitleController.text,
-                    'color': Colors.grey,
-                  });
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('Добавить'),
-            ),
-          ],
-        );
-      },
+          const SizedBox(height: 4),
+          Text(
+            subtitle,
+            style: const TextStyle(color: Colors.grey),
+          ),
+        ],
+      ),
     );
   }
 
@@ -296,8 +232,6 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
     return GestureDetector(
       onTap: _addCustomInvestmentCard,
       child: Container(
-        width: 160,
-        height: 100,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.grey[200],
@@ -308,6 +242,21 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
           child: Icon(Icons.add, color: Colors.black, size: 32),
         ),
       ),
+    );
+  }
+
+  Widget _buildBottomNavigationBar() {
+    return BottomNavigationBar(
+      currentIndex: 0,
+      onTap: (index) {},
+      selectedItemColor: Colors.black,
+      unselectedItemColor: Colors.grey,
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Главная'),
+        BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Продукт'),
+        BottomNavigationBarItem(icon: Icon(Icons.monetization_on), label: 'Транзакции'),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Аккаунт'),
+      ],
     );
   }
 
@@ -362,13 +311,12 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 16),
-              // Invest Button
               ElevatedButton(
                 onPressed: () {
                   final investment = double.tryParse(_controller.text);
                   if (investment != null) {
-                    _addInvestment(investment); // Обновление портфеля
-                    Navigator.pop(context); // Закрыть BottomSheet
+                    _addInvestment(investment);
+                    Navigator.pop(context);
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -392,124 +340,52 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
       },
     );
   }
-  Widget _buildGuideTile(String title, String subtitle) {
-      return ListTile(
-        contentPadding: EdgeInsets.zero,
-        title: Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        subtitle: Text(subtitle, style: const TextStyle(fontSize: 14, color: Colors.grey)),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () {},
-      );
-    }
-  }
 
-  Widget _buildStrategyCard(
-    String title, String returnRate, Color color) {
-    return Expanded(
-      child: Container(
-        margin: const EdgeInsets.only(right: 8),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Column(
-          children: [
-            Icon(Icons.monetization_on, size: 40, color: color),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+  void _addCustomInvestmentCard() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController titleController = TextEditingController();
+        TextEditingController subtitleController = TextEditingController();
+
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: const Text('Добавить тип инвестиции'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: titleController,
+                decoration: const InputDecoration(labelText: 'Название'),
               ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: subtitleController,
+                decoration: const InputDecoration(labelText: 'Описание'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Отмена'),
             ),
-            const SizedBox(height: 4),
-            Text(
-              returnRate,
-              style: const TextStyle(color: Colors.grey),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _investmentCards.add({
+                    'title': titleController.text,
+                    'subtitle': subtitleController.text,
+                    'color': Colors.grey,
+                  });
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Добавить'),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildGuideTile(String title, String description) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      leading: const CircleAvatar(
-        backgroundColor: Colors.blueAccent,
-        radius: 24,
-      ),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-      subtitle: Text(
-        subtitle,
-        style: const TextStyle(color: Colors.grey),
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-      ),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ArticleScreen(title: title, content: content),
-          ),
         );
       },
     );
   }
-}
-
-Widget _buildStrategyCard(String title, String returnRate, Color color) {
-  return Expanded(
-    child: Container(
-      margin: const EdgeInsets.only(right: 8),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        children: [
-          Icon(Icons.monetization_on, size: 40, color: color),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          // const SizedBox(height: 4),
-          Text(
-            returnRate,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.grey,
-              fontSize: 12,
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-Widget _buildGuideTile(String title, String description) {
-  return ListTile(
-    contentPadding: EdgeInsets.zero,
-    leading: const CircleAvatar(
-      backgroundColor: Colors.blueAccent,
-      radius: 24,
-    ),
-    title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-    subtitle: Text(
-      description,
-      style: const TextStyle(color: Colors.grey),
-      maxLines: 2,
-      overflow: TextOverflow.ellipsis,
-    ),
-  );
 }

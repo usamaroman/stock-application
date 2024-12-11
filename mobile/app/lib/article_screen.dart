@@ -4,8 +4,7 @@ class ArticleScreen extends StatelessWidget {
   final String title;
   final String content;
 
-  const ArticleScreen({Key? key, required this.title, required this.content})
-      : super(key: key);
+  const ArticleScreen({super.key, required this.title, required this.content});
 
   @override
   Widget build(BuildContext context) {
@@ -40,18 +39,18 @@ class ArticleScreen extends StatelessWidget {
             
             // Content of the article with styled text and headings
             
-            Text(
+            const Text(
               'Если удачно вложить деньги, можно увеличить капитал в несколько раз. Например, в 2008 году стоимость акции Volkswagen выросла с 211 евро до 1000 евро меньше чем за два дня.',
-              style: const TextStyle(fontSize: 16, color: Colors.black87),
+              style: TextStyle(fontSize: 16, color: Colors.black87),
             ),
             const SizedBox(height: 16),
             Image.asset('assets/images/investment_growth.jpg'), // A relevant image about stock growth
             
             const SizedBox(height: 16),
             
-            Text(
+            const Text(
               'Но капитал можно и потерять — например, в мае 2022 года акции социальной сети Snap подешевели с 22,5 до 12,7 доллара за день.',
-              style: const TextStyle(fontSize: 16, color: Colors.black87),
+              style: TextStyle(fontSize: 16, color: Colors.black87),
             ),
             const SizedBox(height: 16),
             
@@ -60,15 +59,15 @@ class ArticleScreen extends StatelessWidget {
             
             const SizedBox(height: 16),
             
-            Text(
+            const Text(
               'Инвестиции — это вложение денег для получения дохода. Вкладывать деньги можно в недвижимость, в бизнес, в депозиты или в инструменты финансового рынка.',
-              style: const TextStyle(fontSize: 16, color: Colors.black87),
+              style: TextStyle(fontSize: 16, color: Colors.black87),
             ),
             const SizedBox(height: 16),
             
-            Text(
+            const Text(
               'Инвестиции могут быть разных типов: государственные, корпоративные или индивидуальные. Например, государство может инвестировать в отрасли, бизнес — в новые производства, а обычный человек может инвестировать в недвижимость или на депозит.',
-              style: const TextStyle(fontSize: 16, color: Colors.black87),
+              style: TextStyle(fontSize: 16, color: Colors.black87),
             ),
             const SizedBox(height: 16),
             
@@ -77,16 +76,16 @@ class ArticleScreen extends StatelessWidget {
             
             const SizedBox(height: 16),
             
-            Text(
+            const Text(
               'Инвестиции используют, чтобы защититься от инфляции и заработать. Инфляция — это обесценивание денег. Например, по итогам 2022 года инфляция в России составила 11,09%.',
-              style: const TextStyle(fontSize: 16, color: Colors.black87),
+              style: TextStyle(fontSize: 16, color: Colors.black87),
             ),
             const SizedBox(height: 16),
             
             // Conclusion or call to action
-            Text(
+            const Text(
               'Итак, инвестиции — это важный способ увеличения капитала и защиты от инфляции. В следующей статье мы расскажем о наиболее популярных финансовых инструментах и их рисках.',
-              style: const TextStyle(fontSize: 16, color: Colors.black87),
+              style: TextStyle(fontSize: 16, color: Colors.black87),
             ),
           ],
         ),
