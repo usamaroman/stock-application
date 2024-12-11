@@ -86,12 +86,10 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(
-            horizontal: 16, vertical: 8), // Ensure padding is passed correctly
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Welcome Text
             const Text(
               'Добро пожаловать!',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -237,61 +235,73 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
     );
   }
 
-  void _addCustomInvestmentCard() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        TextEditingController titleController = TextEditingController();
-        TextEditingController subtitleController = TextEditingController();
+  // Widget _buildStrategyCard(String title, String subtitle, Color color) {
+  //   return Container(
+  //     padding: const EdgeInsets.all(16),
+  //     decoration: BoxDecoration(
+  //       color: color.withOpacity(0.2),
+  //       borderRadius: BorderRadius.circular(16),
+  //     ),
+  //     child: Column(
+  //       children: [
+  //         Icon(Icons.monetization_on, size: 40, color: color),
+  //         const SizedBox(height: 8),
+  //         Text(
+  //           title,
+  //           style: const TextStyle(
+  //             fontSize: 16,
+  //             fontWeight: FontWeight.bold,
+  //           ),
+  //         ),
+  //         const SizedBox(height: 4),
+  //         Text(
+  //           subtitle,
+  //           style: const TextStyle(color: Colors.grey),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-        return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: const Text('Добавить тип инвестиции'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: titleController,
-                decoration: const InputDecoration(labelText: 'Название'),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: subtitleController,
-                decoration: const InputDecoration(labelText: 'Описание'),
-              ),
-            ],
+  Widget _buildStrategyCard(String title, String returnRate, Color color) {
+  return Expanded(
+    child: Container(
+      margin: const EdgeInsets.only(right: 8),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        children: [
+          Icon(Icons.monetization_on, size: 40, color: color),
+          const SizedBox(height: 8),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Отмена'),
+          // const SizedBox(height: 4),
+          Text(
+            returnRate,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Colors.grey,
+              fontSize: 12,
             ),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _investmentCards.add({
-                    'title': titleController.text,
-                    'subtitle': subtitleController.text,
-                    'color': Colors.grey,
-                  });
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('Добавить'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+          ),
+        ],
+      ),
+    ),
+  );
+}
 
   Widget _buildAddInvestmentCard() {
     return GestureDetector(
       onTap: _addCustomInvestmentCard,
       child: Container(
-        width: 160,
-        height: 100,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.grey[200],
@@ -302,6 +312,21 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
           child: Icon(Icons.add, color: Colors.black, size: 32),
         ),
       ),
+    );
+  }
+
+  Widget _buildBottomNavigationBar() {
+    return BottomNavigationBar(
+      currentIndex: 0,
+      onTap: (index) {},
+      selectedItemColor: Colors.black,
+      unselectedItemColor: Colors.grey,
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Главная'),
+        BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Продукт'),
+        BottomNavigationBarItem(icon: Icon(Icons.monetization_on), label: 'Транзакции'),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Аккаунт'),
+      ],
     );
   }
 
@@ -356,13 +381,12 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 16),
-              // Invest Button
               ElevatedButton(
                 onPressed: () {
                   final investment = double.tryParse(_controller.text);
                   if (investment != null) {
-                    _addInvestment(investment); // Обновление портфеля
-                    Navigator.pop(context); // Закрыть BottomSheet
+                    _addInvestment(investment);
+                    Navigator.pop(context);
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -382,6 +406,54 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
               const SizedBox(height: 16),
             ],
           ),
+        );
+      },
+    );
+  }
+
+  void _addCustomInvestmentCard() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController titleController = TextEditingController();
+        TextEditingController subtitleController = TextEditingController();
+
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: const Text('Добавить тип инвестиции'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: titleController,
+                decoration: const InputDecoration(labelText: 'Название'),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: subtitleController,
+                decoration: const InputDecoration(labelText: 'Описание'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Отмена'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _investmentCards.add({
+                    'title': titleController.text,
+                    'subtitle': subtitleController.text,
+                    'color': Colors.grey,
+                  });
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Добавить'),
+            ),
+          ],
         );
       },
     );
@@ -423,99 +495,33 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
             ),
           );
         }
-      },
-    );
-  }
+      }
+  );
 }
 
-// Widget _buildStrategyCard(String title, String returnRate, Color color) {
-//   return Expanded(
-//     child: Container(
-//       margin: const EdgeInsets.only(right: 8),
-//       padding: const EdgeInsets.all(16),
-//       decoration: BoxDecoration(
-//         color: color.withOpacity(0.2),
-//         borderRadius: BorderRadius.circular(16),
-//       ),
-//       child: Column(
-//         children: [
-//           Icon(Icons.monetization_on, size: 40, color: color),
-//           const SizedBox(height: 8),
-//           Text(
-//             title,
-//             style: const TextStyle(
-//               fontSize: 16,
-//               fontWeight: FontWeight.bold,
-//             ),
-//           ),
-//           const SizedBox(height: 4),
-//           Text(
-//             returnRate,
-//             style: const TextStyle(color: Colors.grey),
-//           ),
-//         ],
-//       ),
+// Widget _buildGuideTile(BuildContext context, String title, String content) {
+//   return ListTile(
+//     contentPadding: EdgeInsets.zero,
+//     leading: const CircleAvatar(
+//       backgroundColor: Colors.blueAccent,
+//       radius: 24,
 //     ),
+//     title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+//     subtitle: Text(
+//       content,
+//       style: const TextStyle(color: Colors.grey),
+//       maxLines: 2,
+//       overflow: TextOverflow.ellipsis,
+//     ),
+//     trailing: const Icon(Icons.chevron_right),
+//     onTap: () {
+//       Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//           builder: (context) => ArticleScreen(title: title, content: content),
+//         ),
+//       );
+//     },
 //   );
 // }
-
-Widget _buildGuideTile(BuildContext context, String title, String content) {
-  return ListTile(
-    contentPadding: EdgeInsets.zero,
-    leading: const CircleAvatar(
-      backgroundColor: Colors.blueAccent,
-      radius: 24,
-    ),
-    title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-    subtitle: Text(
-      content,
-      style: const TextStyle(color: Colors.grey),
-      maxLines: 2,
-      overflow: TextOverflow.ellipsis,
-    ),
-    trailing: const Icon(Icons.chevron_right),
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ArticleScreen(title: title, content: content),
-        ),
-      );
-    },
-  );
-}
-
-Widget _buildStrategyCard(String title, String returnRate, Color color) {
-  return Expanded(
-    child: Container(
-      margin: const EdgeInsets.only(right: 8),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        children: [
-          Icon(Icons.monetization_on, size: 40, color: color),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          // const SizedBox(height: 4),
-          Text(
-            returnRate,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.grey,
-              fontSize: 12,
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
 }
