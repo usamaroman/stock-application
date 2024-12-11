@@ -7,6 +7,9 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -23,9 +26,14 @@ type Server struct {
 	ollamaClient *api.Client
 }
 
-const defaultOllamaURL = "http://localhost:11434/api/chat"
-
 func main() {
+	var defaultOllamaURL string
+
+	ollamaHost := os.Getenv("OLLAMA_HOST")
+	if ollamaHost == "" {
+		defaultOllamaURL = "http://localhost:11434/api/chat"
+	}
+
 	srv := &Server{
 		router: gin.Default(),
 	}
@@ -89,7 +97,22 @@ func main() {
 
 		log.Println(resp.Message.Content)
 		store["gold"] = resp.Message.Content
-		ctx.JSON(http.StatusOK, resp.Message.Content)
+
+		str := strings.Trim(strings.Trim(resp.Message.Content, "["), "]")
+		prices := strings.Split(str, ",")
+
+		res := make([]int, 0, len(prices))
+		for _, p := range prices {
+			i, err := strconv.Atoi(p)
+			if err != nil {
+				ctx.JSON(http.StatusInternalServerError, err.Error())
+				return
+			}
+
+			res = append(res, i)
+		}
+
+		ctx.JSON(http.StatusOK, res)
 	})
 
 	if err := srv.router.Run(":8080"); err != nil {

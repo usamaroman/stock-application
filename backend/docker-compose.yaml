@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  ollama:
+    build:
+      context: .
+      dockerfile: llm/Dockerfile
+    container_name: ollama-model
+    ports:
+      - "11434:11434" # Default Ollama port
+    volumes:
+      - ./llm/Modefile:/Modefile # Mount custom model directory
+    environment:
+      - MODEL_PATH=/models/custom-model.bin # Path to your custom model
+    command: ["ollama", "create", "stockmodel", "-f", "/Modefile"]
+
+  golang-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: golang-service
+    ports:
+      - "8080:8080" # Port for the Golang service
+    environment:
+      - OLLAMA_HOST=http://ollama-model:11434 # Ollama service endpoint
+    depends_on:
+      - ollama
+
