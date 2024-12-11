@@ -32,6 +32,11 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
       'content':
           'Если удачно вложить деньги, можно увеличить капитал в несколько раз...'
     },
+    {
+      'title': 'Диверсификация портфеля',
+      'content':
+          'Диверсификация портфеля является базовым принципом основ инвестиций...'
+    },
   ];
 
   void _addInvestment(double amount) {
@@ -45,7 +50,6 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
         leading: IconButton(
@@ -59,8 +63,7 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
           ),
         ],
       ),
-      body: Container(
-        color: Colors.white, // Задний фон белого цвета
+      body: Container( // Задний фон белого цвета
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Column(
@@ -103,7 +106,6 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
                         _showInvestmentBottomSheet(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
                         foregroundColor: Colors.green,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
@@ -180,7 +182,6 @@ class _InvestmentHomeScreenState extends State<InvestmentHomeScreen> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
         currentIndex: 0,
         onTap: (index) {},
         selectedItemColor: Colors.black,
