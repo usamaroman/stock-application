@@ -38,6 +38,42 @@ func main() {
 		router: gin.Default(),
 	}
 
+	srv.router.POST("/dollar", func(ctx *gin.Context) {
+		var req struct {
+			From string `json:"from"`
+			To   string `json:"to"`
+		}
+
+		if err := ctx.ShouldBindJSON(&req); err != nil {
+			ctx.JSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		resp, err := http.Get(fmt.Sprintf("https://iss.moex.com/iss/statistics/engines/futures/markets/indicativerates/securities/USD/RUB.json?from=%s&till=%s&iss.meta=off", req.From, req.To))
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+		defer resp.Body.Close()
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+		var result Dollar
+		if err := json.Unmarshal(body, &result); err != nil {
+			ctx.JSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		res := make([]float64, 0, len(result.Securities.Data))
+
+		for _, d := range result.Securities.Data {
+			res = append(res, d[3].(float64))
+		}
+
+		ctx.JSON(http.StatusOK, res)
+	})
 	srv.router.GET("/health", func(ctx *gin.Context) {
 		resp, err := talkToOllama(defaultOllamaURL, Request{
 			Model:  "stockmodel",
@@ -165,6 +201,12 @@ func talkToOllama(url string, ollamaReq Request) (*Response, error) {
 	ollamaResp := Response{}
 	err = json.NewDecoder(httpResp.Body).Decode(&ollamaResp)
 	return &ollamaResp, err
+}
+
+type Dollar struct {
+	Securities struct {
+		Data [][]any `json:"data"`
+	} `json:"securities"`
 }
 
 type GoldPriceResponse struct {
