@@ -17,7 +17,9 @@ import (
 )
 
 var store = map[string]any{
-	"gold": nil,
+	"gold":   nil,
+	"dollar": nil,
+	"amount": 0,
 }
 
 type Server struct {
@@ -57,6 +59,11 @@ func main() {
 
 		ctx.JSON(http.StatusOK, res)
 	})
+	srv.router.POST("/:amount", func(ctx *gin.Context) {
+		p := ctx.Param("amount")
+
+		store["amount"] = p
+	})
 	srv.router.GET("/health", func(ctx *gin.Context) {
 		resp, err := talkToOllama(defaultOllamaURL, Request{
 			Model:  "stockmodel",
@@ -76,8 +83,12 @@ func main() {
 		log.Println(resp.Message.Content)
 		ctx.JSON(http.StatusOK, resp.Message.Content)
 	})
-	srv.router.GET("/gold", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, store["gold"])
+	srv.router.GET("/", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{
+			"gold":   store["gold"],
+			"dollar": store["dollar"],
+			"amount": store["amount"],
+		})
 	})
 
 	srv.router.POST("/calculate_dollar", func(ctx *gin.Context) {
@@ -117,7 +128,6 @@ func main() {
 		}
 
 		log.Println(resp.Message.Content)
-		store["gold"] = resp.Message.Content
 
 		str := strings.Trim(strings.Trim(resp.Message.Content, "["), "]")
 		prices := strings.Split(str, ",")
@@ -132,6 +142,8 @@ func main() {
 
 			res = append(res, i)
 		}
+
+		store["dollar"] = res
 
 		ctx.JSON(http.StatusOK, res)
 	})
